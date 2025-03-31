@@ -80,7 +80,13 @@ def display_colors(rgb_values, titles):
     plt.tight_layout()
     plt.show()
 
-def calculate_color_differences(df, lab_values, target):
-    target_array = np.array(target).reshape(1, -1)
-    df['deltaE'] = deltaE_ciede2000(lab_values, target_array)
+def calculate_color_differences(df, lab_values, target_lab):
+    # Convert to NumPy arrays
+    lab_values = df[['L', 'a', 'b']].values.astype(float) 
+    target_array = np.array(target_lab).reshape(1, 3) 
+
+    # Compute deltaE for all rows
+    deltaE = deltaE_ciede2000(lab_values, target_array)
+    
+    df['deltaE'] = deltaE
     return df.sort_values(by='deltaE')

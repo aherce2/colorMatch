@@ -20,7 +20,7 @@ TOP_MATCHES = 10
 DELTA_E_THRESHOLD = 1.5
 
 # Connect to Database
-def connect(filepath="database.db"):
+def connect(filepath="../database.db"):
     # connect to database 
     db_path = os.path.join(filepath)
     print("Database Path:", db_path)
@@ -127,10 +127,12 @@ def load_data(file="cielab_data.npy"):
     data = np.load(file)
     
     # Extract L, a, and b values from each row (tuple)
-    lab_values = data[:, 2:5]  
+    lab_values = data[:, 5:8]
 
-    columns = ['id', 'shade_id', 'L', 'a', 'b', 'category']
+    columns = ['cielab_id', 'shade_id', 'red', 'green', 'blue', 
+              'L', 'a', 'b', 'monk_category']
     df = pd.DataFrame(data, columns=columns)
+    
     
     return df, lab_values
 
@@ -208,23 +210,20 @@ def getProducts(shade_matches, delta_e, cursor_obj):
 
 def main():
 
-    shades = ['very_fair', 'fair', 'medium', 'monk', 'olive', 'brown']
-
     cielab = []
     cursor_obj, conn = connect()
 
-    for shade in shades:
-        statement = f''' 
-        SELECT * 
-        FROM {shade}
-        '''
+    statement = f''' 
+    SELECT * 
+    FROM cielab
+    '''
 
-        cursor_obj.execute(statement)
+    cursor_obj.execute(statement)
 
-        output = cursor_obj.fetchall()
+    output = cursor_obj.fetchall()
 
-        for row in output:
-            cielab.append(row)
+    for row in output:
+        cielab.append(row)
 
     np.save('cielab_data.npy', cielab)
     conn.commit()

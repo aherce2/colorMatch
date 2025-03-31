@@ -8,8 +8,7 @@ import math
 from helperFunctions import connect, convert_to_rgb, get_input
 from helperFunctions import xyz_to_lab, display_colors, calculate_color_differences,close_connection
 
-NUM_CLUSTERS = 10
-DELTA_E_THRESHOLD = 1.5
+DELTA_E_THRESHOLD = 1.75
 
 # MST Reference Colors (L, a, b values)
 MST_REF = {
@@ -36,16 +35,19 @@ def classify_mst_category(target_lab):
             closest_category = category
     return closest_category, min_de
 
-def load_data(file="cielab_data.npy"):
+def load_data(category=None, file="cielab_data.npy"):
     data = np.load(file)
-    # Correct columns based on actual table structure
+
     columns = ['cielab_id', 'shade_id', 'red', 'green', 'blue', 
               'L', 'a', 'b', 'monk_category']
-    
     df = pd.DataFrame(data, columns=columns)
 
-    lab_values = data[:, 5:8]
+    # return rows where category = target category
+    if category is not None:
+        df = df[df['monk_category'] == category]
 
+    lab_values = df[['L', 'a', 'b']].to_numpy()
+    
     return df, lab_values
 
 def getMatches():
@@ -53,13 +55,13 @@ def getMatches():
     
     mst_category, mst_de = classify_mst_category(target_lab)
     
+
+
     print(f"\nAnalyzing color matches for L: {target_lab[0]} a: {target_lab[1]} b: {target_lab[2]}")
     print(f"Closest MST Category: {mst_category} (ΔE: {mst_de:.2f})")
 
     
-    df, lab_values = load_data() 
-
-    lab_values = lab_values.astype(np.float64)
+    df, lab_values = load_data(mst_category) 
 
     df_sorted = calculate_color_differences(df, lab_values, target_lab)
     threshold_matches = df_sorted[df_sorted['deltaE'] <= DELTA_E_THRESHOLD] # Delta E within threshold
@@ -78,13 +80,6 @@ def getMatches():
     combined_df = pd.concat([target_df, matches_df], ignore_index=True)
     combined_df['RGB'] = combined_df.apply(lambda row: convert_to_rgb((row['L'], row['a'], row['b'])), axis=1)
     
-    # Display results
-    # rgb_values = [row for row in combined_df['RGB']]
-    # titles = [f"{row['type']} (Shade ID: {row['shade_id']})\nΔE: {row['deltaE']:.2f}" 
-    #         for _, row in combined_df.iterrows()]
-    
-    # display_colors(rgb_values, titles)
-    
     print("\nColor Comparison Table:")
     print(combined_df[['type', 'shade_id', 'L', 'a', 'b', 'RGB', 'deltaE']].to_markdown(index=False))
     
@@ -92,11 +87,6 @@ def getMatches():
     delta_e = combined_df[combined_df['type'] == 'Match']['deltaE'].values
     
     return shade_ids, delta_e
-
-#     return (
-#     combined_df[combined_df['type'] == 'Match']['shade_id'].values,
-#     [mst_de] * len(combined_df[combined_df['type'] == 'Match']))
-
 
 def getProducts(shade_matches, delta_e, cursor_obj):
     product_matches = []
@@ -127,23 +117,22 @@ def getProducts(shade_matches, delta_e, cursor_obj):
 
 def main():
 
-    cielab = []
+    # cielab = []
     cursor_obj, conn = connect()
 
-    statement = f''' 
-    SELECT * 
-    FROM cielab
-    '''
+    # statement = f''' 
+    # SELECT * 
+    # FROM cielab
+    # '''
+    # cursor_obj.execute(statement)
 
-    cursor_obj.execute(statement)
+    # output = cursor_obj.fetchall()
 
-    output = cursor_obj.fetchall()
+    # for row in output:
+    #     cielab.append(row)
 
-    for row in output:
-        cielab.append(row)
-
-    np.save('cielab_data.npy', cielab)
-    conn.commit()
+    # np.save('cielab_data.npy', cielab)
+    # conn.commit()
 
     shade_matches, delta_e = getMatches()
 
