@@ -2,45 +2,25 @@
 Color Matcher Code for Arduino + SQLite3 Code Interaction
 
 colorMatch
-
 ├── Arduino
-
 │   ├── ESP-BLE/
-
 │   ├── connectColorSensor
-
 │   ├── connectI2C
-
 │   ├── sendMessage
-
 │   ├── bleConnect.py
-
 ├── README.md
-
 ├── Color Analysis
-
-│   ├── \_\_pycache\_\_
-
+│   ├── __pycache__
 │   ├── csv files
-
-      │	│   ├── ECE 445 Product Data.xlsx
-
-      │	│   ├── cielab.csv
-
-      │	│   ├── shades.csv
-
-│   ├── cielab\_data.npy
-
+│   │   ├── ECE 445 Product Data.xlsx
+│   │   ├── cielab.csv
+│   │   ├── shades.csv
+│   ├── cielab_data.npy
 │   ├── classifyData.ipynb
-
 │   ├── database.db
-
 │   ├── demo.py
-
 │   ├── getMatches.py
-
 │   └── helperFunctions.py
-
 └── database.db
 
 ---
