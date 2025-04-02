@@ -1,6 +1,5 @@
 # colorMatch
 Color Matcher Code for Arduino + SQLite3 Code Interaction
-
 colorMatch
 
 ├── Arduino
@@ -23,11 +22,11 @@ colorMatch
 
 │   ├── csv files
 
-      │	│   ├── ECE 445 Product Data.xlsx
+│   │   ├── ECE 445 Product Data.xlsx
 
-      │	│   ├── cielab.csv
+│   │   ├── cielab.csv
 
-      │	│   ├── shades.csv
+│   │   ├── shades.csv
 
 │   ├── cielab\_data.npy
 
@@ -43,6 +42,8 @@ colorMatch
 
 └── database.db
 
+---
+Answer from Perplexity: pplx.ai/share
 ---
 
 ## ESP-BLE
