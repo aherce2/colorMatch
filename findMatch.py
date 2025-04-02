@@ -5,8 +5,8 @@ from skimage.color import lab2rgb, deltaE_ciede2000
 import sqlite3
 import os
 import math
-from helperFunctions import connect, convert_to_rgb, get_input
-from helperFunctions import xyz_to_lab, display_colors, calculate_color_differences,close_connection
+from analyzeData import connect, convert_to_rgb, get_ble_lab
+from analyzeData import calculate_color_differences,close_connection
 
 DELTA_E_THRESHOLD = 1.75
 
@@ -24,11 +24,13 @@ MST_REF = {
     10: (14.61, 1.482, 3.525)
 }
 
+
 def classify_mst_category(target_lab):
     min_de = float('inf')
     closest_category = 0
     for category, lab in MST_REF.items():
         current_de = deltaE_ciede2000([target_lab], [lab]).item()
+        print(current_de)
         if current_de < min_de:
             min_de = current_de
             closest_category = category
@@ -48,16 +50,17 @@ def load_data(category, file="cielab_data.npy"):
     lab_values = df[['L', 'a', 'b']].to_numpy()
     
     return df, lab_values
-    
 
 def getMatches():
-    target_lab = get_input()
-    
+    # target_lab = get_input()
+    target_lab = get_ble_lab()
+    print(target_lab)
     mst_category, mst_de = classify_mst_category(target_lab)
     
     print(f"\nAnalyzing color matches for L: {target_lab[0]} a: {target_lab[1]} b: {target_lab[2]}")
     print(f"Closest MST Category: {mst_category} (ΔE: {mst_de:.2f})")
 
+    
     df, lab_values = load_data(mst_category) 
 
     df_sorted = calculate_color_differences(df, lab_values, target_lab)
@@ -90,7 +93,6 @@ def getProducts(shade_matches, delta_e, cursor_obj):
     delta = []
     delta_percentage = []
     for shade, de in zip(shade_matches, delta_e):
-
         statement = f''' 
         SELECT brands.brand_name, products.product_name, shades.shade_name
         FROM shades
@@ -100,21 +102,21 @@ def getProducts(shade_matches, delta_e, cursor_obj):
         '''
         cursor_obj.execute(statement)
         output = cursor_obj.fetchall()
-        
         for row in output:
             product_matches.append(row)
-            d = round((100 - de)/100 * 100,2)
+            d = round((100 - de)/100 * 100, 2)
             delta_percentage.append( str(d) + '%') 
             delta.append(de)
-    
     df_product_matches = pd.DataFrame(product_matches, columns=['Brand', 'Product', 'Shade'])
     df_product_matches['Percent Match'] = delta_percentage 
     print(df_product_matches[['Brand', 'Product', 'Shade', 'Percent Match']].to_markdown(index=False))
     return
 
-        
+            
+
 def main():
 
+    
     cielab = []
     cursor_obj, conn = connect()
 
@@ -142,3 +144,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
