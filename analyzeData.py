@@ -92,6 +92,7 @@ def find_device(adapter):
     logging.error(f"Could not find device with name '{DEVICE_NAME}'")
     time.sleep(10)
     return None
+
 def parse_ble_lab(response):
     """Convert BLE response to LAB tuple with error handling"""
     try:
