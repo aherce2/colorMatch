@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-
+from ble import get_ble
 # Create An App Instance
 app = Flask(__name__)
 
@@ -28,6 +28,14 @@ def bluetooth_connection(status):
             "success": False,
             "message": "Invalid status provided"
         }), 400
+
+
+
+# Modify to establish BLE and wait
+@app.route("/api/ble", methods=['POST'])
+def bluetooth_connection():
+    return get_ble()
+
 
 
 if __name__ == "__main__":

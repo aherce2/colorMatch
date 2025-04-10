@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 import DisplayCard   from './components/displayCard.jsx'
 import ConnectBLE from './components/bleBTN.jsx'
@@ -10,7 +11,7 @@ function App() {
   return (
     <div className="App">
       <ConnectBLE/>
-      {/* <ScanModal/> */}
+      <ScanModal/>
       {/* <DisplayCard /> */}
     </div>
   )
