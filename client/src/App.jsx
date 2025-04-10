@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
       <ConnectBLE/>
-      {/* <ScanModal/> */}
+      <ScanModal/>
       {/* <DisplayCard /> */}
     </div>
   )
