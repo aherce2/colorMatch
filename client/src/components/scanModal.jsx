@@ -54,12 +54,6 @@ function ScanModal() {
             <Modal.Body>
               <p>{modalBody[0]}</p>
             </Modal.Body>
-
-            <Modal.Footer>
-              <Button variant="primary" disabled>
-                Next Step
-              </Button>
-            </Modal.Footer>
           </Modal.Dialog>
         </div>
       )}
