@@ -1,95 +1,81 @@
 '''
 Connect to BLE Device
 '''
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from skimage.color import lab2rgb, deltaE_ciede2000
-import sqlite3
-import os
-import math
+from flask import Flask, jsonify
+from flask_cors import CORS
 import simplepyble
 import logging
 import time
-import keyboard
-import struct
 
-DEVICE_NAME = "ESP32-BLE"
+app = Flask(__name__)
+cors = CORS(app, origins='*')
+
+# Global BLE variables
+peripheral_instance = None
+DEVICE_NAME = "ESP32"
 SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-    
 
-# BLE Connection
-def select_adapter(adapters):
-    if len(adapters) == 0:
-        logging.error("No adapters found")
-        return None
-    elif len(adapters) == 1:
-        logging.info(f"Found 1 adapter: {adapters[0].identifier()} [{adapters[0].address()}]")
-        return adapters[0]
-    else:
-        logging.info("Please select an adapter: ")
-        for i, adapter in enumerate(adapters):
-            logging.info(f"{i}: {adapter.identifier()} [{adapter.address()}]")
-        choice = int(input("Enter choice: "))
-        return adapters[choice]
+def select_adapter():
+    adapters = simplepyble.Adapter.get_adapters()
+    return adapters[0] if adapters else None
 
 def find_device(adapter):
-    adapter.set_callback_on_scan_start(lambda: logging.info("Scan started."))
-    adapter.set_callback_on_scan_stop(lambda: logging.info("Scan complete."))
-    adapter.set_callback_on_scan_found(lambda peripheral: logging.info(f"Found {peripheral.identifier()} [{peripheral.address()}]"))
     adapter.scan_for(2000)
-    peripherals = adapter.scan_get_results()
-    for i, peripheral in enumerate(peripherals):
+    for peripheral in adapter.scan_get_results():
         if peripheral.identifier() == DEVICE_NAME:
-            logging.info(f"Found {DEVICE_NAME} at address [{peripheral.address()}]")
-            return peripherals[i]
-    logging.error(f"Could not find device with name '{DEVICE_NAME}'")
-    time.sleep(10)
+            return peripheral
     return None
 
-def parse_ble_lab(response):
-    """Convert BLE response to LAB tuple with error handling"""
+def connect_ble():
+    global peripheral_instance
     try:
-        lab_str = response.decode().strip()
-        l, a, b = map(float, lab_str.split(','))
-        return (l, a, b)
-
-    except Exception as e:
-        logging.error(f"BLE parse error: {str(e)}")
-        return None
-
-def get_ble():
-
-    """Connect to BLE device"""
-    adapter = select_adapter(simplepyble.Adapter.get_adapters())
-    if not adapter:
-        return None
-
-    peripheral = find_device(adapter)
-    if not peripheral:
-        return None
-
-    try:
-        peripheral.connect()
-        time.sleep(2)  # Reduced connection time
+        adapter = select_adapter()
+        if not adapter:
+            return False
         
-        if not peripheral.is_connected():
-            logging.error("Connection failed")
-            return None
-
-        # Single read instead of continuous loop
-        response = peripheral.read(SERVICE_UUID, CHARACTERISTIC_UUID)
-        if response:
-            return parse_ble_lab(response)
-                
-    except Exception as e:
-        logging.error(f"BLE Error: {e}")
-    finally:
+        peripheral = find_device(adapter)
+        if not peripheral:
+            return False
+        
+        peripheral.connect()
+        time.sleep(2)
+        
         if peripheral.is_connected():
-            peripheral.disconnect()
-            
-    return None
+            peripheral_instance = peripheral
+            return True
+        return False
+    
+    except Exception as e:
+        logging.error(f"Connection error: {str(e)}")
+        return False
+
+def disconnect_ble():
+    global peripheral_instance
+    if peripheral_instance and peripheral_instance.is_connected():
+        try:
+            peripheral_instance.disconnect()
+            peripheral_instance = None
+            return True
+        except Exception as e:
+            logging.error(f"Disconnection error: {str(e)}")
+    return False
+
+# @app.route("/api/ble/<status>", methods=['GET'])
+# def handle_ble(status):
+#     if status.lower() == 'true':
+#         if disconnect_ble():
+#             return jsonify(success=True, message="Disconnected from BLE Device")
+#         return jsonify(success=False, message="Disconnection failed")
+    
+#     elif status.lower() == 'false':
+#         if connect_ble():
+#             return jsonify(success=True, message="Connected to BLE Device")
+#         return jsonify(success=False, message="Connection failed")
+    
+#     return jsonify(success=False, message="Invalid status"), 400
+
+# if __name__ == "__main__":
+#     app.run(debug=True, port=8080)
