@@ -66,7 +66,7 @@ def getMatches():
     df_sorted = calculate_color_differences(df, lab_values, target_lab)
     threshold_matches = df_sorted[df_sorted['deltaE'] <= DELTA_E_THRESHOLD] # Delta E within threshold
     
-    print(f"Threshold Matches: {threshold_matches}")
+    # print(f"Threshold Matches: {threshold_matches}")
     
     target_df = pd.DataFrame([{
         'id': None, 'shade_id': None,  

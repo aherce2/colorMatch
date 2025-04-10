@@ -42,8 +42,8 @@ def load_data(category, file="cielab_data.npy"):
     df = pd.DataFrame(data, columns=columns)
 
     # return rows where category = target category
-    if category is not None:
-        df = df[df['monk_category'] == category]
+    # if category is not None:
+    #     df = df[df['monk_category'] == category]
 
     lab_values = df[['L', 'a', 'b']].to_numpy()
     
@@ -63,7 +63,7 @@ def getMatches():
     df_sorted = calculate_color_differences(df, lab_values, target_lab)
     threshold_matches = df_sorted[df_sorted['deltaE'] <= DELTA_E_THRESHOLD] # Delta E within threshold
     
-    print(f"Threshold Matches: {threshold_matches}")
+    # print(f"Threshold Matches: {threshold_matches}")
     
     target_df = pd.DataFrame([{
         'id': None, 'shade_id': None,  
@@ -78,7 +78,7 @@ def getMatches():
     combined_df['RGB'] = combined_df.apply(lambda row: convert_to_rgb((row['L'], row['a'], row['b'])), axis=1)
     
     print("\nColor Comparison Table:")
-    print(combined_df[['type', 'shade_id', 'L', 'a', 'b', 'RGB', 'deltaE']].to_markdown(index=False))
+    # print(combined_df[['type', 'shade_id', 'L', 'a', 'b', 'RGB', 'deltaE']].to_markdown(index=False))
     
     shade_ids = combined_df[combined_df['type'] == 'Match']['shade_id'].values
     delta_e = combined_df[combined_df['type'] == 'Match']['deltaE'].values
