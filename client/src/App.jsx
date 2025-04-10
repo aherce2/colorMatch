@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useState } from 'react'
 import './App.css'
 import DisplayCard   from './components/displayCard.jsx'
 import ConnectBLE from './components/bleBTN.jsx'
