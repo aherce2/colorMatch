@@ -1,24 +1,13 @@
 '''
 Connect to BLE Device
 '''
-from flask import Flask, jsonify
 from flask_cors import CORS
 import simplepyble
 import logging
 import time
 from communicationBLE import on_notification, send_message
+import constants
 
-app = Flask(__name__)
-cors = CORS(app, origins='*')
-
-# Global BLE variables
-peripheral_instance = None
-DEVICE_NAME = "ESP32"
-SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-
-MESSAGE_CHAR_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-received_messages = []
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
@@ -29,8 +18,8 @@ def select_adapter():
 def find_device(adapter):
     adapter.scan_for(2000)
     for peripheral in adapter.scan_get_results():
-        if peripheral.identifier() == DEVICE_NAME:
-            logging.info(f"Found device: {DEVICE_NAME}")
+        if peripheral.identifier() == constants.DEVICE_NAME:
+            logging.info(f"Found device: {constants.DEVICE_NAME}")
             return peripheral
     return None
 
@@ -47,24 +36,24 @@ def connect_ble():
         peripherals = adapter.scan_get_results()
 
         for peripheral in peripherals:
-            if peripheral.identifier() == DEVICE_NAME:
-                logging.info(f"Found device: {DEVICE_NAME}")
+            if peripheral.identifier() == constants.DEVICE_NAME:
+                logging.info(f"Found device: {constants.DEVICE_NAME}")
                 peripheral_instance = peripheral
                 break
 
         if not peripheral_instance:
-            logging.error(f"Device '{DEVICE_NAME}' not found")
+            logging.error(f"Device '{constants.DEVICE_NAME}' not found")
             return False
 
         peripheral_instance.connect()
         time.sleep(3)
 
         if peripheral_instance.is_connected():
-            logging.info(f"Connected to {DEVICE_NAME}")
+            logging.info(f"Connected to {constants.DEVICE_NAME}")
         else:
             logging.error("Failed to connect to the device")
         try:
-            peripheral.notify(SERVICE_UUID, CHARACTERISTIC_UUID, on_notification)
+            peripheral.notify(constants.SERVICE_UUID, constants.CHARACTERISTIC_UUID, on_notification)
             logging.info("Notifications enabled")
             return True
         except Exception as e:
@@ -86,7 +75,7 @@ def disconnect_ble():
                 try:
                     logging.info("Attempting to disconnect from BLE device...")
                     peripheral_instance.disconnect()
-                    time.sleep(1)  # Allow time for disconnection to complete
+                    time.sleep(5)  # Allow time for disconnection to complete
                     
                     if not peripheral_instance.is_connected():
                         logging.info("Successfully disconnected from BLE device")
@@ -94,11 +83,11 @@ def disconnect_ble():
                         return True
                         
                     logging.warning("Disconnection not acknowledged. Retrying...")
-                    time.sleep(3)
+                    time.sleep(5)
                         
                 except Exception as e:
-                    logging.error(f"Disconnection error: {str(e)}. Retrying in {3} seconds...")
-                    time.sleep(3)
+                    logging.error(f"Disconnection error: {str(e)}. Retrying in {5} seconds...")
+                    time.sleep(5)
         except Exception as e:
             logging.error(f"Critical disconnection error: {str(e)}")
             return False
