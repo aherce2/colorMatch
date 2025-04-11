@@ -11,18 +11,7 @@ from constants import socketio
 
 
 def on_notification(data: bytes):
-    # try:
-    #     message = data.decode()
-    #     logging.info(f"Received notification: {message}")
-    #     constants.received_messages.append(message)
-        
-    #     # Emit through shared socketio instance
-    #     socketio.emit('new_message', {'message': message})
-        
-    #     return message
-    # except Exception as e:
-    #     logging.error(f"Notification error: {str(e)}")
-    #     return None
+
     message = data.decode()
     constants.received_messages.append(message)
     

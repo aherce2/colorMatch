@@ -29,9 +29,6 @@ def handle_ble(status):
     
     return jsonify(success=False, message="Invalid status")
 
-@app.route("/api/ble/message", methods=['GET'])
-def get_message():
-    return jsonify(success=True, messages=constants.received_messages)
 
 if __name__ == "__main__":
     # app.run(debug=True, port=8080)

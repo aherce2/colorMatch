@@ -19,7 +19,7 @@ function App() {
     socket.on('new_message', (data) => {
       console.log('New message:', data.message);
     });
-
+    
     // Cleanup on component unmount
     return () => {
       socket.off('all_messages');
@@ -31,7 +31,7 @@ function App() {
   return (
     <div className="App">
       <ConnectBLE/>
-      <ScanModal/>
+      {/* <ScanModal/> */}
       {/* <DisplayCard /> */}
     </div>
   )
