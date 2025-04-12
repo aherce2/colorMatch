@@ -3,14 +3,6 @@ import { Container, Row, Col } from "react-bootstrap";
 import CardComponent from "./card";
 import axios from "axios";
 
-// const cardsData = [
-//   { id: 1, brand: "Brand 1", product: "Product 1", shade: "Shade 1", hex: "#3498db" },
-//   { id: 2, brand: "Brand 2", product: "Product 2", shade: "Shade 2", hex: "#e74c3c" },
-//   { id: 3, brand: "Brand 3", product: "Product 3", shade: "Shade 3", hex: "#2ecc71" },
-//   { id: 4, brand: "Brand 4", product: "Product 4", shade: "Shade 4", hex: "#f1c40f" }
-
-// ];
-
 function DisplayCard () {
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
@@ -29,19 +21,20 @@ function DisplayCard () {
     const getProducts = async () => {
       const result = await fetchProducts();
       if (result.success === false) {
-        setError(result.message); // Set error message
+        setError(result.message);
+      } else if (Array.isArray(result) && result.length === 0) {
+        setError("Sorry, No matches available within Appropriate Threshold.");
       } else {
-        setProducts(result); // Set fetched products
+        setProducts(result);
       }
     };
     getProducts();
   }, []);
 
+
   if (error) {
-    return <div>Error: {error}</div>; // Display error message
+    return <div style={{ textAlign: "center", marginTop: "2rem" }}>{error}</div>;
   }
-
-
 
   return (
     <Container fluid className="mt-4">

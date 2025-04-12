@@ -5,7 +5,6 @@ When Lab Values are sent call function to get data and display to front end
 
 '''
 
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -118,14 +117,12 @@ def getMatches():
     
     print(f"\nAnalyzing color matches for L: {target_lab[0]} a: {target_lab[1]} b: {target_lab[2]}")
     print(f"Closest MST Category: {mst_category} (ΔE: {mst_de:.2f})")
-
     
     df, lab_values = load_data(mst_category) 
 
     df_sorted = calculate_color_differences(df, lab_values, target_lab)
     threshold_matches = df_sorted[df_sorted['deltaE'] <= DELTA_E_THRESHOLD] # Delta E within threshold
     
-    # print(f"Threshold Matches: {threshold_matches}")
     
     target_df = pd.DataFrame([{
         'id': None, 'shade_id': None,  
@@ -145,7 +142,7 @@ def getMatches():
     shade_ids = combined_df[combined_df['type'] == 'Match']['shade_id'].values
     delta_e = combined_df[combined_df['type'] == 'Match']['deltaE'].values
     
-    return shade_ids, delta_e
+    return target_lab, mst_category, shade_ids, delta_e
 
 def getProducts(shade_matches, delta_e, cursor_obj):
     product_dict = []
@@ -175,48 +172,33 @@ def getProducts(shade_matches, delta_e, cursor_obj):
                 "hex": hex_value,
                 "percent_match": f"{percent_match}%"
             })
-            # markdown format
-            # product_matches.append([brand, product, shade_name])
-            # delta_percentage.append(f"{percent_match}%")
-        
-    # df_product_matches = pd.DataFrame(product_matches, columns=['Brand', 'Product', 'Shade'])
-    # df_product_matches['Percent Match'] = delta_percentage 
 
-    # print(df_product_matches[['Brand', 'Product', 'Shade', 'Percent Match']].to_markdown(index=False))
     return product_dict
 
             
-
 def getUserData():
-
     
     cielab = []
     cursor_obj, conn = connect()
 
-    statement = f''' 
-    SELECT * 
-    FROM cielab
-    '''
-    cursor_obj.execute(statement)
+    # statement = f''' 
+    # SELECT * 
+    # FROM cielab
+    # '''
+    # cursor_obj.execute(statement)
 
-    output = cursor_obj.fetchall()
+    # output = cursor_obj.fetchall()
 
-    for row in output:
-        cielab.append(row)
+    # for row in output:
+    #     cielab.append(row)
 
-    np.save('cielab_data.npy', cielab)
-    conn.commit()
+    # np.save('cielab_data.npy', cielab)
+    # conn.commit()
 
-    shade_matches, delta_e = getMatches()
+    target_lab, mst_category, shade_matches, delta_e = getMatches()
 
     products = getProducts(shade_matches, delta_e, cursor_obj)
 
     close_connection(conn)
-
+    
     return products
-
-
-# if __name__ == "__main__":
-#     main()
-
-

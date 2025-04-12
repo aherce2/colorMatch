@@ -30,10 +30,10 @@ def handle_ble(status):
     
     return jsonify(success=False, message="Invalid status")
 
-
 @app.route("/api/products/", methods=['GET'])
 def getProducts():
-    return getUserData()
+    data = getUserData()
+    return jsonify(data)
 
 if __name__ == "__main__":
     # app.run(debug=True, port=8080)
