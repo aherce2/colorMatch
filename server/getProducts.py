@@ -34,7 +34,7 @@ MST_REF = {
 def connect(filepath="database.db"):
     # connect to database 
     db_path = os.path.join(filepath)
-    print("Database Path:", db_path)
+    # print("Database Path:", db_path)
     conn = sqlite3.connect(db_path)
     
     # cursor object 
@@ -84,7 +84,6 @@ def classify_mst_category(target_lab):
     closest_category = 0
     for category, lab in MST_REF.items():
         current_de = deltaE_ciede2000([target_lab], [lab]).item()
-        print(current_de)
         if current_de < min_de:
             min_de = current_de
             closest_category = category
@@ -109,14 +108,13 @@ def getMatches():
     # target_lab = get_input()
     # target_lab = get_ble_lab()
     
-    # Hardcode for frontend integration/debugging
+    # Hardcode for frontend integration/debugging -> Return target lab + mst category to frontend later
     target_lab = [66.611,17.184,39.107]
 
-    print(target_lab)
     mst_category, mst_de = classify_mst_category(target_lab)
     
-    print(f"\nAnalyzing color matches for L: {target_lab[0]} a: {target_lab[1]} b: {target_lab[2]}")
-    print(f"Closest MST Category: {mst_category} (ΔE: {mst_de:.2f})")
+    # print(f"\nAnalyzing color matches for L: {target_lab[0]} a: {target_lab[1]} b: {target_lab[2]}")
+    # print(f"Closest MST Category: {mst_category} (ΔE: {mst_de:.2f})")
     
     df, lab_values = load_data(mst_category) 
 
@@ -136,13 +134,13 @@ def getMatches():
     combined_df = pd.concat([target_df, matches_df], ignore_index=True)
     combined_df['RGB'] = combined_df.apply(lambda row: convert_to_rgb((row['L'], row['a'], row['b'])), axis=1)
     
-    print("\nColor Comparison Table:")
-    print(combined_df[['type', 'shade_id', 'L', 'a', 'b', 'RGB', 'deltaE']].to_markdown(index=False))
+    # print("\nColor Comparison Table:")
+    # print(combined_df[['type', 'shade_id', 'L', 'a', 'b', 'RGB', 'deltaE']].to_markdown(index=False))
     
     shade_ids = combined_df[combined_df['type'] == 'Match']['shade_id'].values
     delta_e = combined_df[combined_df['type'] == 'Match']['deltaE'].values
     
-    return target_lab, mst_category, shade_ids, delta_e
+    return shade_ids, delta_e
 
 def getProducts(shade_matches, delta_e, cursor_obj):
     product_dict = []
@@ -194,8 +192,7 @@ def getUserData():
 
     # np.save('cielab_data.npy', cielab)
     # conn.commit()
-
-    target_lab, mst_category, shade_matches, delta_e = getMatches()
+    shade_matches, delta_e = getMatches()
 
     products = getProducts(shade_matches, delta_e, cursor_obj)
 
