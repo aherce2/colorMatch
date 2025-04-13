@@ -4,7 +4,6 @@ from ble import disconnect_ble, connect_ble
 from communicationBLE import on_notification
 import constants
 from constants import socketio
-from getMatches import getUserData
 
 # Create An App Instance
 app = Flask(__name__)
@@ -29,17 +28,6 @@ def handle_ble(status):
         return jsonify(success=False, message="Connection failed")
     
     return jsonify(success=False, message="Invalid status")
-
-@app.route("/api/products", methods=['GET'])
-def get_products():
-    # Example: Fetch LAB values from query params if needed
-    l = request.args.get('l', type=float)
-    a = request.args.get('a', type=float)
-    b = request.args.get('b', type=float)
-    target_lab = [l, a, b]
-    products = getUserData(target_lab)
-    return jsonify(products)
-
 
 if __name__ == "__main__":
     # app.run(debug=True, port=8080)

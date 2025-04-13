@@ -8,15 +8,6 @@ function DisplayCard () {
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
 
-  // const fetchProducts = async () => {
-  //   try {
-  //     const response = await axios.get("http://localhost:8080/api/products");
-  //     return response.data; // Return the response data directly
-  //   } catch (error) {
-  //     console.error("Error fetching products:", error);
-  //     return { success: false, message: "Failed to fetch products" };
-  //   }
-  // };
   const fetchProducts = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/products", {
@@ -28,20 +19,6 @@ function DisplayCard () {
     }
   };
   
-
-  // useEffect(() => {
-  //   const getProducts = async () => {
-  //     const result = await fetchProducts();
-  //     if (result.success === false) {
-  //       setError(result.message);
-  //     } else if (Array.isArray(result) && result.length === 0) {
-  //       setError("Sorry, No matches available within Appropriate Threshold.");
-  //     } else {
-  //       setProducts(result);
-  //     }
-  //   };
-  //   getProducts();
-  // }, []);
   useEffect(() => {
     socket.on('lab_products', (data) => {
       setProducts(data.products);

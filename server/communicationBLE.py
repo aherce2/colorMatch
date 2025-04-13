@@ -8,7 +8,7 @@ import time
 import constants
 from flask_socketio import SocketIO, emit
 from constants import socketio
-from getMatches import getUserData
+from getMatches import analyzeInput
 
 import struct
 
@@ -23,18 +23,13 @@ def on_notification(data: bytes):
         try:
             # Unpack 3 floats (12 bytes) after header
             l, a, b = struct.unpack('<3f', payload)
-            handle_lab(l, a, b)
+            print(f"LAB received: [{l:.2f}, {a:.2f}, {b:.2f}]")
+            analyzeInput([l,a,b])
         except struct.error:
             print("Invalid LAB payload")
     else:
         print(f"Unknown header: {hex(header)}")
 
-
-def handle_lab(l: float, a: float, b: float):
-    print(f"LAB received: [{l:.2f}, {a:.2f}, {b:.2f}]")
-    target_lab = [l,a,b]
-    products = getUserData(target_lab)
-    socketio.emit('lab_products', {'products': products})
 
 # def on_notification(data: bytes):
 
