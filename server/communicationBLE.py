@@ -33,7 +33,8 @@ def on_notification(data: bytes):
 def handle_lab(l: float, a: float, b: float):
     print(f"LAB received: [{l:.2f}, {a:.2f}, {b:.2f}]")
     target_lab = [l,a,b]
-    getUserData(target_lab)
+    products = getUserData(target_lab)
+    socketio.emit('lab_products', {'products': products})
 
 # def on_notification(data: bytes):
 

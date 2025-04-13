@@ -30,10 +30,16 @@ def handle_ble(status):
     
     return jsonify(success=False, message="Invalid status")
 
-# @app.route("/api/products/", methods=['GET'])
-# def getProducts():
-#     data = getUserData()
-#     return jsonify(data)
+@app.route("/api/products", methods=['GET'])
+def get_products():
+    # Example: Fetch LAB values from query params if needed
+    l = request.args.get('l', type=float)
+    a = request.args.get('a', type=float)
+    b = request.args.get('b', type=float)
+    target_lab = [l, a, b]
+    products = getUserData(target_lab)
+    return jsonify(products)
+
 
 if __name__ == "__main__":
     # app.run(debug=True, port=8080)

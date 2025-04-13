@@ -48,7 +48,7 @@ from Helper_Functions.analyzeData import *
 #     return shade_ids, delta_e
 
 def getMatches(target_lab):
-    
+
     mst_category, mst_de = classify_mst_category(target_lab)
     df, lab_values = load_data(mst_category)
     df_sorted = calculate_color_differences(df, lab_values, target_lab)
@@ -77,7 +77,6 @@ def getProducts(shade_matches, delta_e, cursor_obj):
         cursor_obj.execute(statement)
         output = cursor_obj.fetchall()
         
-        product_matches = []
         #save and return as a dictonary
         for row in output:
             shade_id, brand, product, shade_name, hex_value= row

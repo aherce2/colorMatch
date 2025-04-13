@@ -2,34 +2,56 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import CardComponent from "./card";
 import axios from "axios";
+import { socket } from '../utils/socket'
 
 function DisplayCard () {
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
 
+  // const fetchProducts = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:8080/api/products");
+  //     return response.data; // Return the response data directly
+  //   } catch (error) {
+  //     console.error("Error fetching products:", error);
+  //     return { success: false, message: "Failed to fetch products" };
+  //   }
+  // };
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/products");
-      return response.data; // Return the response data directly
+      const response = await axios.get("http://localhost:8080/api/products", {
+        params: { l: labLValue, a: labAValue, b: labBValue }
+      });
+      return response.data;
     } catch (error) {
       console.error("Error fetching products:", error);
-      return { success: false, message: "Failed to fetch products" };
     }
   };
+  
 
+  // useEffect(() => {
+  //   const getProducts = async () => {
+  //     const result = await fetchProducts();
+  //     if (result.success === false) {
+  //       setError(result.message);
+  //     } else if (Array.isArray(result) && result.length === 0) {
+  //       setError("Sorry, No matches available within Appropriate Threshold.");
+  //     } else {
+  //       setProducts(result);
+  //     }
+  //   };
+  //   getProducts();
+  // }, []);
   useEffect(() => {
-    const getProducts = async () => {
-      const result = await fetchProducts();
-      if (result.success === false) {
-        setError(result.message);
-      } else if (Array.isArray(result) && result.length === 0) {
-        setError("Sorry, No matches available within Appropriate Threshold.");
-      } else {
-        setProducts(result);
-      }
+    socket.on('lab_products', (data) => {
+      setProducts(data.products);
+    });
+  
+    return () => {
+      socket.off('lab_products');
     };
-    getProducts();
   }, []);
+  
 
 
   if (error) {
