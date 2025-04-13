@@ -4,7 +4,7 @@ from ble import disconnect_ble, connect_ble
 from communicationBLE import on_notification
 import constants
 from constants import socketio
-from getProducts import getUserData
+from getMatches import getUserData
 
 # Create An App Instance
 app = Flask(__name__)
@@ -30,10 +30,10 @@ def handle_ble(status):
     
     return jsonify(success=False, message="Invalid status")
 
-@app.route("/api/products/", methods=['GET'])
-def getProducts():
-    data = getUserData()
-    return jsonify(data)
+# @app.route("/api/products/", methods=['GET'])
+# def getProducts():
+#     data = getUserData()
+#     return jsonify(data)
 
 if __name__ == "__main__":
     # app.run(debug=True, port=8080)
