@@ -3,6 +3,7 @@ import './App.css'
 import DisplayCard   from './components/displayCard.jsx'
 import ConnectBLE from './components/bleBTN.jsx'
 import ScanModal from './components/scanModal.jsx'
+import FigureExample from './components/measuredValue.jsx'
 import { socket } from './utils/socket'
 
 function App() {
@@ -31,7 +32,8 @@ function App() {
   return (
     <div className="App">
       <ConnectBLE/>
-      {/* <ScanModal/> */}
+      <ScanModal/>
+      <FigureExample/>
       <DisplayCard />
     </div>
   )

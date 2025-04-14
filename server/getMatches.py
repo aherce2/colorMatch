@@ -67,6 +67,14 @@ def analyzeInput(target_lab):
     shade_matches, delta_e = getMatches(target_lab)
     products = getProducts(shade_matches, delta_e, cursor_obj)
     close_connection(conn)
-    socketio.emit('lab_products', {'products': products})
+    # Broadcast User's measured Shade 
+    {
+  "target": {
+    "rgb": [218, 150, 100],
+    "hex": "#DA9664"
+  }
+}
+
+    socketio.emit('lab_products', {'products': products}) # Broadcast products
     return products
 

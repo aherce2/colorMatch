@@ -9,7 +9,6 @@ import constants
 from flask_socketio import SocketIO, emit
 from constants import socketio
 from getMatches import analyzeInput
-
 import struct
 
 def on_notification(data: bytes):
