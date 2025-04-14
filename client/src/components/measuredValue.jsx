@@ -7,7 +7,7 @@ function FigureExample() {
 
   useEffect(() => {
     socket.on('target_lab', (data) => {
-      setMeasuredValue(data.target); // data.target now has both rgb and hex
+      setMeasuredValue(data.target);
     });
   
     return () => {
@@ -15,18 +15,24 @@ function FigureExample() {
     };
   }, []);
   
-  const rgbColor = `rgb(${measuredValue.rgb?.join(',') || '0,0,0'})`;
+  const rgbColor = `rgb(${measuredValue.rgb?.join(',')})`;
   const hexColor = measuredValue.hex || '#000000';
   
-
   return (
     <Figure>
+        <Figure.Caption
+        style={{
+            padding: '8px 16px',
+            textAlign: 'center',
+        }}
+        >
+        Measured Skin Color
+        </Figure.Caption>
       <div
         style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: '16px',
         }}
       >
         <div
@@ -53,9 +59,14 @@ function FigureExample() {
           </span>
         </div>
       </div>
-      <Figure.Caption>
-        Measured Skin Color
-      </Figure.Caption>
+      <Figure.Caption
+        style={{
+            padding: '8px 16px',
+            textAlign: 'center',
+        }}
+        >
+        Closest Monk Category: 
+        </Figure.Caption>
     </Figure>
   );
 }

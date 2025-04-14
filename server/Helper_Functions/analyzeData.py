@@ -25,6 +25,7 @@ def close_connection(conn):
 #     lab_array = np.array([[lab_color]], dtype=np.float64)
 #     rgb_array = lab2rgb(lab_array).squeeze()
 #     return np.clip(rgb_array * 255, 0, 255).astype(int)
+
 def convert_to_rgb(lab_color):
     lab_array = np.array([[lab_color]], dtype=np.float64)
     rgb_array = lab2rgb(lab_array).squeeze()
@@ -74,7 +75,7 @@ def classify_mst_category(target_lab):
         if current_de < min_de:
             min_de = current_de
             closest_category = category
-    return closest_category, min_de
+    return closest_category
 
 def load_data(category, file="cielab_data.npy"):
     data = np.load(file)

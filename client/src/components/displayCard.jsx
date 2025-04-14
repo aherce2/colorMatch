@@ -4,37 +4,19 @@ import CardComponent from "./card";
 import axios from "axios";
 import { socket } from '../utils/socket'
 
-function DisplayCard () {
-  const [error, setError] = useState(null);
-  const [products, setProducts] = useState([]);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/api/products", {
-        params: { l: labLValue, a: labAValue, b: labBValue }
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
+function DisplayCard ({ products }) {
+  // const [products, setProducts] = useState([]);
   
-  useEffect(() => {
-    socket.on('lab_products', (data) => {
-      setProducts(data.products);
-    });
+  // useEffect(() => {
+  //   socket.on('lab_products', (data) => {
+  //     setProducts(data.products);
+  //   });
   
-    return () => {
-      socket.off('lab_products');
-    };
-  }, []);
+  //   return () => {
+  //     socket.off('lab_products');
+  //   };
+  // }, []);
   
-
-
-  if (error) {
-    return <div style={{ textAlign: "center", marginTop: "2rem" }}>{error}</div>;
-  }
-
   return (
     <Container fluid className="mt-4">
       <Row className="g-4">

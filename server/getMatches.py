@@ -4,11 +4,6 @@ Fetch the products based on return data
 When Lab Values are sent call function to get data and display to front end
 
 '''
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from skimage.color import lab2rgb, deltaE_ciede2000
 import sqlite3
 import os
 import math
@@ -17,7 +12,10 @@ from constants import socketio
 
 def getMatches(target_lab):
 
-    mst_category, mst_de = classify_mst_category(target_lab)
+    mst_category = classify_mst_category(target_lab)
+
+    # Broadcast User's Monk Category
+    socketio.emit('monk_category', {'monk_category': mst_category})
     df, lab_values = load_data(mst_category)
     df_sorted = calculate_color_differences(df, lab_values, target_lab)
     
@@ -68,13 +66,7 @@ def analyzeInput(target_lab):
     products = getProducts(shade_matches, delta_e, cursor_obj)
     close_connection(conn)
     # Broadcast User's measured Shade 
-    {
-  "target": {
-    "rgb": [218, 150, 100],
-    "hex": "#DA9664"
-  }
-}
-
+    socketio.emit('target_lab', {'target': convert_to_rgb(target_lab)})
     socketio.emit('lab_products', {'products': products}) # Broadcast products
     return products
 

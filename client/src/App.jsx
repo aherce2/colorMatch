@@ -4,37 +4,22 @@ import DisplayCard   from './components/displayCard.jsx'
 import ConnectBLE from './components/bleBTN.jsx'
 import ScanModal from './components/scanModal.jsx'
 import FigureExample from './components/measuredValue.jsx'
+import useSocketEvents from './useSocketEvents.js'
 import { socket } from './utils/socket'
 
 function App() {
-  useEffect(() => {
-    // Connect socket
-    socket.connect();
+  const [products, setProducts] = useState([]);
+  const [measuredValue, setMeasuredValue] = useState([0, 0, 0]);
 
-    // Log all initial messages
-    socket.on('all_messages', (data) => {
-      console.log('All messages:', data.messages);
-    });
-
-    // Log real-time updates
-    socket.on('new_message', (data) => {
-      console.log('New message:', data.message);
-    });
-    
-    // Cleanup on component unmount
-    return () => {
-      socket.off('all_messages');
-      socket.off('new_message');
-      socket.disconnect();
-    };
-  }, []);
-
+  useSocketEvents(setProducts, setMeasuredValue);
+  
   return (
     <div className="App">
       <ConnectBLE/>
       <ScanModal/>
       <FigureExample/>
-      <DisplayCard />
+      {/* <FigureExample measuredValue={measuredValue} /> */}
+      {products.length > 0 && <DisplayCard products={products} />}
     </div>
   )
 }
