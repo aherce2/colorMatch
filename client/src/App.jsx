@@ -8,15 +8,17 @@ import useSocketEvents from './useSocketEvents.js'
 import { socket } from './utils/socket'
 
 function App() {
+  const [bleStatus, setBleStatus] = useState(false);
   const [products, setProducts] = useState([]);
   const [measuredValue, setMeasuredValue] = useState([0, 0, 0]);
   const [monk, setMonk] = useState([]);
 
-  useSocketEvents(setProducts, setMeasuredValue,setMonk);
+  useSocketEvents(setProducts, setMeasuredValue,setMonk, setBleStatus);
 
   return (
     <div className="App">
-      <ConnectBLE/>
+      {/* <ConnectBLE/> */}
+      <ConnectBLE bleStatus={bleStatus} />
       <ScanModal/>
       <MeasuredFigure measuredValue={measuredValue} monk={monk}/>
       {products.length > 0 && <DisplayCard products={products} />}

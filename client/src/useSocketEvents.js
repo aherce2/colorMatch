@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { socket } from './utils/socket'
 
-const useSocketEvents = (setProducts, setMeasuredValue, setMonk) => {
+const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus) => {
   useEffect(() => {
     socket.connect();
 
@@ -10,6 +10,12 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk) => {
       'lab_products': (data) => setProducts(data.products || 'No Products Available'),
       'target_lab': (data) => setMeasuredValue?.(data.target || [0, 0, 0]),
       'monk_category': (data) => setMonk?.(data.monk_category || 'No categories available'),
+      'ble_status': (data) => {  // New handler
+        setBleStatus?.(data.status === 'connected');
+        if (data.status === 'error') {
+          console.error('BLE Error:', data.message);
+        }
+      }
     };
 
     // Attach handlers
@@ -24,7 +30,7 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk) => {
       });
       socket.disconnect();
     };
-  }, [setProducts, setMeasuredValue]);
+  }, [setProducts, setMeasuredValue, setMonk, setBleStatus]);
 };
 
 export default useSocketEvents;

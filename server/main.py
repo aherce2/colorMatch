@@ -15,19 +15,37 @@ socketio.init_app(app, cors_allowed_origins="*")
 # Enable Origins -> Accept all origins for now
 cors = CORS(app, origins='*')
 
-@app.route("/api/ble/<status>", methods=['GET'])
-def handle_ble(status):
-    if status.lower() == 'true':
-        if disconnect_ble():
-            return jsonify(success=True, message="Disconnected from BLE Device")
-        return jsonify(success=False, message="Disconnection failed")
+# @app.route("/api/ble/<status>", methods=['GET'])
+# def handle_ble(status):
+#     if status.lower() == 'true':
+#         if disconnect_ble():
+#             return jsonify(success=True, message="Disconnected from BLE Device")
+#         return jsonify(success=False, message="Disconnection failed")
     
-    elif status.lower() == 'false':
-        if connect_ble():
-            return jsonify(success=True, message="Connected to BLE Device")
-        return jsonify(success=False, message="Connection failed")
+#     elif status.lower() == 'false':
+#         if connect_ble():
+#             return jsonify(success=True, message="Connected to BLE Device")
+#         return jsonify(success=False, message="Connection failed")
     
-    return jsonify(success=False, message="Invalid status")
+#     return jsonify(success=False, message="Invalid status")
+
+
+@socketio.on('ble_connect')
+def handle_ble_connect():
+    success = connect_ble()
+    if success:
+        socketio.emit('ble_status', {'status': 'connected', 'message': 'BLE device connected'})
+    else:
+        socketio.emit('ble_status', {'status': 'error', 'message': 'Connection failed'})
+
+@socketio.on('ble_disconnect')
+def handle_ble_disconnect():
+    success = disconnect_ble()
+    if success:
+        socketio.emit('ble_status', {'status': 'disconnected', 'message': 'BLE device disconnected'})
+    else:
+        socketio.emit('ble_status', {'status': 'error', 'message': 'Disconnection failed'})
+
 
 if __name__ == "__main__":
     # app.run(debug=True, port=8080)
