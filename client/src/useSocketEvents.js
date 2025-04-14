@@ -10,7 +10,7 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus) =
       'lab_products': (data) => setProducts(data.products || 'No Products Available'),
       'target_lab': (data) => setMeasuredValue?.(data.target || [0, 0, 0]),
       'monk_category': (data) => setMonk?.(data.monk_category || 'No categories available'),
-      'ble_status': (data) => {  // New handler
+      'ble_status': (data) => {
         setBleStatus?.(data.status === 'connected');
         if (data.status === 'error') {
           console.error('BLE Error:', data.message);

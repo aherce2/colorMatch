@@ -28,17 +28,7 @@ def on_notification(data: bytes):
             print("Invalid LAB payload")
     else:
         print(f"Unknown header: {hex(header)}")
-
-
-# def on_notification(data: bytes):
-
-#     message = data.decode()
-#     constants.received_messages.append(message)
-    
-#     # Broadcast new message to all clients
-#     socketio.emit('new_message', {'message': message})
-
-
+        
 def send_message(peripheral, message):
     try:
         peripheral.write_request(constants.SERVICE_UUID, constants.CHARACTERISTIC_UUID, message.encode())

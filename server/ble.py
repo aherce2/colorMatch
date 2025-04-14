@@ -5,7 +5,7 @@ from flask_cors import CORS
 import simplepyble
 import logging
 import time
-from communicationBLE import on_notification, send_message
+from communicationBLE import on_notification
 import constants
 
 
