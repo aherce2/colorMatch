@@ -1,33 +1,20 @@
-import { useState, useEffect } from 'react'
+import React from 'react';
 import { Figure } from 'react-bootstrap';
-import { socket } from '../utils/socket'
 
-function FigureExample() {
-  const [measuredValue, setMeasuredValue] = useState([0, 0, 0]); 
-
-  useEffect(() => {
-    socket.on('target_lab', (data) => {
-      setMeasuredValue(data.target);
-    });
-  
-    return () => {
-      socket.off('target_lab');
-    };
-  }, []);
-  
-  const rgbColor = `rgb(${measuredValue.rgb?.join(',')})`;
+function MeasuredFigure({ measuredValue, monk }) {
+  const rgbColor = `rgb(${measuredValue.rgb?.join(',') || '0,0,0'})`;
   const hexColor = measuredValue.hex || '#000000';
-  
+
   return (
     <Figure>
-        <Figure.Caption
+      <Figure.Caption
         style={{
-            padding: '8px 16px',
-            textAlign: 'center',
+          padding: '8px 16px',
+          textAlign: 'center',
         }}
-        >
+      >
         Measured Skin Color
-        </Figure.Caption>
+      </Figure.Caption>
       <div
         style={{
           display: 'flex',
@@ -61,14 +48,14 @@ function FigureExample() {
       </div>
       <Figure.Caption
         style={{
-            padding: '8px 16px',
-            textAlign: 'center',
+          padding: '8px 16px',
+          textAlign: 'center',
         }}
-        >
-        Closest Monk Category: 
-        </Figure.Caption>
+      >
+        Closest Monk Category: {monk}
+      </Figure.Caption>
     </Figure>
   );
 }
 
-export default FigureExample;
+export default MeasuredFigure;

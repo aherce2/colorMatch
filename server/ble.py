@@ -67,30 +67,39 @@ def connect_ble():
             peripheral_instance = None
         return False
     
+
 def disconnect_ble():
     global peripheral_instance
+
     if peripheral_instance and peripheral_instance.is_connected():
-        try:            
-            while True:
-                try:
-                    logging.info("Attempting to disconnect from BLE device...")
-                    peripheral_instance.disconnect()
-                    time.sleep(5)  # Allow time for disconnection to complete
-                    
-                    if not peripheral_instance.is_connected():
-                        logging.info("Successfully disconnected from BLE device")
-                        peripheral_instance = None
-                        return True
-                        
-                    logging.warning("Disconnection not acknowledged. Retrying...")
-                    time.sleep(5)
-                        
-                except Exception as e:
-                    logging.error(f"Disconnection error: {str(e)}. Retrying in {5} seconds...")
-                    time.sleep(5)
+        try:
+            logging.info("Unsubscribing from notifications...")
+            peripheral_instance.unsubscribe(constants.SERVICE_UUID, constants.CHARACTERISTIC_UUID)
+            time.sleep(2)  
         except Exception as e:
-            logging.error(f"Critical disconnection error: {str(e)}")
-            return False
-    else:
-        logging.warning("No connected BLE device found to disconnect")
+            logging.error(f"Error unsubscribing: {e}")
+
+        retries = 3
+        while retries > 0:
+            try:
+                logging.info(f"Disconnecting attempt {4-retries}/3...")
+                peripheral_instance.disconnect()
+                time.sleep(2)
+
+                if not peripheral_instance.is_connected():
+                    logging.info("Successfully disconnected")
+                    peripheral_instance = None
+                    return True
+
+                retries -= 1
+                time.sleep(2)
+            except Exception as e:
+                logging.error(f"Disconnection error: {e}")
+                retries -= 1
+
+        logging.error("Failed to disconnect after 3 attempts")
         return False
+    else:
+        logging.warning("No active connection")
+        return False
+

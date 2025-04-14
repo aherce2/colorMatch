@@ -16,6 +16,7 @@ def getMatches(target_lab):
 
     # Broadcast User's Monk Category
     socketio.emit('monk_category', {'monk_category': mst_category})
+    print(f"Monk Category: {mst_category}")
     df, lab_values = load_data(mst_category)
     df_sorted = calculate_color_differences(df, lab_values, target_lab)
     

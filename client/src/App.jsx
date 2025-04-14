@@ -3,22 +3,22 @@ import './App.css'
 import DisplayCard   from './components/displayCard.jsx'
 import ConnectBLE from './components/bleBTN.jsx'
 import ScanModal from './components/scanModal.jsx'
-import FigureExample from './components/measuredValue.jsx'
+import MeasuredFigure from './components/measuredValue.jsx'
 import useSocketEvents from './useSocketEvents.js'
 import { socket } from './utils/socket'
 
 function App() {
   const [products, setProducts] = useState([]);
   const [measuredValue, setMeasuredValue] = useState([0, 0, 0]);
+  const [monk, setMonk] = useState([]);
 
-  useSocketEvents(setProducts, setMeasuredValue);
-  
+  useSocketEvents(setProducts, setMeasuredValue,setMonk);
+
   return (
     <div className="App">
       <ConnectBLE/>
       <ScanModal/>
-      <FigureExample/>
-      {/* <FigureExample measuredValue={measuredValue} /> */}
+      <MeasuredFigure measuredValue={measuredValue} monk={monk}/>
       {products.length > 0 && <DisplayCard products={products} />}
     </div>
   )
