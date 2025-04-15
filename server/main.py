@@ -1,6 +1,8 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from ble import disconnect_ble, connect_ble
+from communicationBLE import on_notification
+import constants
 from constants import socketio
 
 # Create An App Instance
@@ -12,6 +14,7 @@ socketio.init_app(app, cors_allowed_origins="*")
 
 # Enable Origins -> Accept all origins for now
 cors = CORS(app, origins='*')
+
 
 @socketio.on('ble_connect')
 def handle_ble_connect():
