@@ -17,7 +17,7 @@ MST_REF = {
     10: (14.61, 1.482, 3.525)
 }
 
-socketio = SocketIO()
+socketio = SocketIO(max_http_buffer_size=100 * 1024 * 1024)
 
 peripheral_instance = None
 DEVICE_NAME = "ESP32"
