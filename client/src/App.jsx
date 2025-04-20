@@ -21,7 +21,9 @@ function App() {
     <div className="App">
       <ImageUpload handleImageUpload={handleImageUpload} />
       <ConnectBLE bleStatus={bleStatus} />
-      <ScanModal/>
+      {/* <ScanModal/> */}
+      {/* Conditionally Show ScanModal if BLE is connnected */}
+      {bleStatus && <ScanModal />} 
       <MeasuredFigure measuredValue={measuredValue} monk={monk}/>
       {products.length > 0 && <DisplayCard products={products} />}
     </div>

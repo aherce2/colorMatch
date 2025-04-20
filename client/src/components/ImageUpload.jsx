@@ -1,8 +1,6 @@
 import Form from 'react-bootstrap/Form';
-import useSocketEvents from '../useSocketEvents.js'
 
 const ImageUpload = ({ handleImageUpload }) => {
-
 
   return (
     <Form.Group controlId="formFile" className="mb-3">

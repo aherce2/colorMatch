@@ -97,7 +97,17 @@ def enhanced_skin_detection(image_rgb):
     return img, final_mask
 
 def get_perceptual_median_color(image_rgb, mask):
-    """Get perceptual median skin color in LAB with gamma correction."""
+    """
+    
+    Get perceptual median skin color in LAB with gamma correction.
+    
+    Isolate Skin Pixels from input image using mask
+    Convert RGB to CIELAB color space for perceptual uniformity. 
+    Weighted percentiles with weights for L,a,b channels to emphasize lightness
+    Convert back to RGB 
+    
+    
+    """
     skin_pixels = image_rgb[mask == 255]
     if skin_pixels.size == 0:
         return (0, 0, 0), "#000000"
@@ -126,18 +136,6 @@ def display_results(image_rgb, mask, avg_rgb, hex_color):
     plt.tight_layout()
     plt.show()
 
-# def process_image_enhanced(image_path):
-#     """Full pipeline with enhanced detection and display."""
-#     img_bgr = cv2.imread(image_path)
-#     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-
-#     resized_rgb, skin_mask = enhanced_skin_detection(img_rgb)
-#     avg_rgb, hex_color = get_perceptual_median_color(resized_rgb, skin_mask)
-
-#     # display_results(resized_rgb, skin_mask, avg_rgb, hex_color)
-
-#     return avg_rgb, hex_color, skin_mask
-
 def process_image_enhanced(image_buffer):
     # Convert buffer to numpy array
     nparr = np.frombuffer(image_buffer, np.uint8)
@@ -146,5 +144,6 @@ def process_image_enhanced(image_buffer):
     
     resized_rgb, skin_mask = enhanced_skin_detection(img_rgb)
     avg_rgb, hex_color = get_perceptual_median_color(resized_rgb, skin_mask)
+    display_results(resized_rgb, skin_mask, avg_rgb, hex_color)
     
     return avg_rgb, hex_color, skin_mask
