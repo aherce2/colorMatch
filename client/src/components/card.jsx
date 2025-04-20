@@ -3,7 +3,16 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 function CardComponent({ swatch, brand, product, shade, hex, percentMatch }) {
   return (
-    <Card style={{ width: '18rem' }}>
+    <Card className="h-100">
+    {/* <Card style={{ width: '18rem' }}> */}
+      {/* <div
+        style={{
+          backgroundColor: swatch,
+          height: '180px',
+          width: '100%',
+          position: 'relative', 
+        }}
+      > */}
       <div
         style={{
           backgroundColor: swatch,

@@ -39,19 +39,26 @@ def handle_ble_disconnect():
 
 @socketio.on('analyze_input')
 def handle_analysis(data, image_buffer):
-    
-    # Process image upload
-    filename = data.get('filename', 'untitled')
-    with open(f"uploads/{filename}", "wb") as f:
-        f.write(image_buffer)
+    if data.get('color', False):
 
-    avg_rgb, hex_color, _ = process_image_enhanced(image_buffer)
-    print(avg_rgb)
-    normalized_rgb = np.array([avg_rgb[0]/255.0, avg_rgb[1]/255.0, avg_rgb[2]/255.0])
-    # print(normalized_rgb)
-    lab_values = color.rgb2lab(normalized_rgb)     
-    # print(lab_values)
-    products = analyzeInput(lab_values)
+        rgb = data.get('rgb', [0, 0, 0])
+        normalized_rgb = np.array([rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0])
+        print(rgb, normalized_rgb)
+        lab_values = color.rgb2lab([normalized_rgb])[0]
+        products = analyzeInput(lab_values)
+    else:
+        # Process image upload
+        filename = data.get('filename', 'untitled')
+        with open(f"uploads/{filename}", "wb") as f:
+            f.write(image_buffer)
+
+        avg_rgb, hex_color, _ = process_image_enhanced(image_buffer)
+        print(avg_rgb)
+        normalized_rgb = np.array([avg_rgb[0]/255.0, avg_rgb[1]/255.0, avg_rgb[2]/255.0])
+        # print(normalized_rgb)
+        lab_values = color.rgb2lab(normalized_rgb)     
+        # print(lab_values)
+        products = analyzeInput(lab_values)
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=8080)

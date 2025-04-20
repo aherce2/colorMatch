@@ -42,3 +42,26 @@
 }
 
 
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centers items horizontally */
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .top-bar {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.card-container {
+  display: flex;
+  gap: 24px; /* or whatever spacing you want */
+  justify-content: center;
+  flex-wrap: wrap; /* allows wrapping on smaller screens */
+}
