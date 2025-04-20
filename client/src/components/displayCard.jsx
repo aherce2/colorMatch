@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import CardComponent from "./card";
-import axios from "axios";
-import { socket } from '../utils/socket'
+
+
 
 function DisplayCard({ products }) {
   return (
@@ -14,7 +14,7 @@ function DisplayCard({ products }) {
       ) : (
         <Row className="g-4">
           {products.map((product) => (
-            <Col key={product.id} xs={12} md={6} lg={4}>
+            <Col key={product.id} xs={3} sm={3} md={3} lg={3}>
               <CardComponent
                 swatch={product.hex}
                 brand={product.brand}

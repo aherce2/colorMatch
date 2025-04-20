@@ -18,13 +18,22 @@ function App() {
 
   return (
     <div className="App">
-      <div className="top-bar">
+      {/* <div className="top-bar">
         <ColorPicker onColorSelect={handleColorSelect} />
         <ImageUpload handleImageUpload={handleImageUpload} />
-      </div>
+      </div> */}
+
+      {!bleStatus &&
+        <div className="top-bar">
+          <ColorPicker onColorSelect={handleColorSelect} />
+          <ImageUpload handleImageUpload={handleImageUpload} />
+        </div>
+      }
+
       <ConnectBLE bleStatus={bleStatus} />
       {/* <ScanModal/> */}
       {/* Conditionally Show ScanModal if BLE is connnected */}
+      
       {bleStatus && <ScanModal />} 
       <MeasuredFigure measuredValue={measuredValue} monk={monk}/>
       <DisplayCard products={products}/>
