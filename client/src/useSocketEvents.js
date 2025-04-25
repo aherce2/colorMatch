@@ -95,22 +95,59 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
     socket.emit('analyze_input', { color: true, rgb: [r, g, b] }, null);
   }, []);
 
+
+  // useEffect(() => {
+  //   const handleScanStatus = (data) => {
+  //     setScanStatus(data.status);
+  //     if (data.status === 'acknowledged') {
+  //       setTimeout(() => setScanStatus('complete'), 2500);
+  //     }
+  //   };
+
+  //   socket.connect();
+  //   socket.on('scan_status', handleScanStatus);
+
+  //   return () => {
+  //     socket.off('scan_status', handleScanStatus);
+  //     socket.disconnect();
+  //   };
+  // }, [setScanStatus]);
+
   useEffect(() => {
-    const handleScanStatus = (data) => {
-      setScanStatus(data.status);
-      if (data.status === 'acknowledged') {
-        setTimeout(() => setScanStatus('complete'), 2500);
+    socket.connect();
+
+    const socketEventHandlers = {
+      'scan_status': (data) => {
+        setScanStatus(data.status);
+        if (data.status === 'acknowledged') {
+          setTimeout(() => setScanStatus('complete'), 2500);
+        }
+      },
+      'upload_error': (error) => console.error('Upload failed:', error),
+      'lab_products': (data) => setProducts(data.products),
+      'target_lab': (data) => setMeasuredValue?.(data.target || [0, 0, 0]),
+      'monk_category': (data) => setMonk?.(data.monk_category || 'No categories available'),
+      'ble_status': (data) => {
+        setBleStatus?.(data.status === 'connected');
+        if (data.status === 'error') {
+          console.error('BLE Error:', data.message);
+        }
       }
     };
 
-    socket.connect();
-    socket.on('scan_status', handleScanStatus);
+    // Attach handlers
+    Object.entries(socketEventHandlers).forEach(([event, handler]) => {
+      socket.on(event, handler);
+    });
 
+    // Cleanup
     return () => {
-      socket.off('scan_status', handleScanStatus);
+      Object.keys(socketEventHandlers).forEach((event) => {
+        socket.off(event);
+      });
       socket.disconnect();
     };
-  }, [setScanStatus]);
+  }, [setProducts, setMeasuredValue, setMonk, setBleStatus,setScanStatus]);
 
   return { 
     handleImageUpload, 
