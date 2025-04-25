@@ -7,12 +7,7 @@ import CardComponent from "./card";
 function DisplayCard({ products }) {
   return (
     <Container fluid className="mt-4">
-      {products.length === 0 ? (
-        <div className="text-center w-100 py-4">
-          <h5>No products matching within threshold</h5>
-        </div>
-      ) : (
-        <Row className="g-4">
+<Row className="g-4">
           {products.map((product) => (
             <Col key={product.id} xs={3} sm={3} md={3} lg={3}>
               <CardComponent
@@ -26,7 +21,6 @@ function DisplayCard({ products }) {
             </Col>
           ))}
         </Row>
-      )}
     </Container>
   );
 }

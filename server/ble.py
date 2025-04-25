@@ -8,6 +8,7 @@ import time
 from communicationBLE import on_notification
 import constants
 
+peripheral_instance = None
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
@@ -41,7 +42,7 @@ def connect_ble():
                 peripheral_instance = peripheral
                 break
 
-        if not peripheral_instance:
+        if peripheral_instance is None:
             logging.error(f"Device '{constants.DEVICE_NAME}' not found")
             return False
 
@@ -103,3 +104,38 @@ def disconnect_ble():
         logging.warning("No active connection")
         return False
 
+        
+def send_message(message):
+    global peripheral_instance
+    try:
+        # Add connection checks
+        if not peripheral_instance:
+            logging.error("No BLE device reference")
+            return False
+            
+        if not peripheral_instance or not peripheral_instance.is_connected():
+            logging.error("Device not connected")
+            return False
+            
+        # Convert to byte array if needed
+        if isinstance(message, str):
+            data = message.encode()
+        else:
+            data = message
+            
+        # peripheral_instance.write_request(
+        #     constants.SERVICE_UUID,
+        #     constants.CHARACTERISTIC_UUID,
+        #     data
+        # )
+        peripheral_instance.write_command(
+            constants.SERVICE_UUID,
+            constants.CHARACTERISTIC_UUID,
+            data
+        )
+
+        logging.info(f"Sent: {message}")
+        return True
+    except Exception as e:
+        logging.error(f"Send error: {e}")
+        return False

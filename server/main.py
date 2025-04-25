@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from ble import disconnect_ble, connect_ble
+from ble import disconnect_ble, connect_ble, send_message
 from communicationBLE import on_notification
 import constants
 from constants import socketio
@@ -59,6 +59,15 @@ def handle_analysis(data, image_buffer):
         lab_values = color.rgb2lab(normalized_rgb)     
         # print(lab_values)
         products = analyzeInput(lab_values)
+
+@socketio.on('start_scan')
+def handle_start_scan():
+    success = send_message('start')
+    if success:
+        socketio.emit('scan_status', {'status': 'sent', 'message': 'Start command sent'})
+    else:
+        socketio.emit('scan_status', {'status': 'error', 'message': 'Failed to send start command'})
+
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=8080)
