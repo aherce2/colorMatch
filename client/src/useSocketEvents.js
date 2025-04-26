@@ -2,7 +2,7 @@
 import { useEffect, useCallback, useState } from 'react';
 import { socket } from './utils/socket';
 
-const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, setScanStatus) => {
+const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, setScanStatus,setScanMessage) => {
 
 
   // const handleStartScan = useCallback(() => {
@@ -12,12 +12,13 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
   //     setTimeout(() => setScanStatus('complete'), 3000);
   //   }
   // }, [setScanStatus]);
+
   const handleStartScan = useCallback((command) => {
     if (socket.connected) {
-      console.log("Button Clicked Successfully");
+      console.log("Button Clicked Successfully"); 
       setScanStatus('scanning');
       socket.emit('start_scan', { command }); // Send command to backend
-      setTimeout(() => setScanStatus('complete'), 3000);
+      setTimeout(() => setScanStatus('Scan Finished'), 3000);
     }
   }, [setScanStatus]);
 
@@ -43,11 +44,17 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
     socket.connect();
 
     const socketEventHandlers = {
+      // 'scan_status': (data) => {
+      //   setScanStatus(data.status);
+      //   if (data.status === 'acknowledged') {
+      //     setTimeout(() => setScanStatus('complete'), 2500);
+      //   }
+      // },
       'scan_status': (data) => {
-        setScanStatus(data.status);
+        console.log("Display Acknowledge");
         if (data.status === 'acknowledged') {
-          setTimeout(() => setScanStatus('complete'), 2500);
-        }
+          setTimeout(() => setScanStatus(data.status),setScanMessage(data.message || ''), 2500);
+          }
       },
       'upload_error': (error) => console.error('Upload failed:', error),
       'lab_products': (data) => setProducts(data.products),
@@ -73,7 +80,7 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
       });
       socket.disconnect();
     };
-  }, [setProducts, setMeasuredValue, setMonk, setBleStatus,setScanStatus]);
+  }, [setProducts, setMeasuredValue, setMonk, setBleStatus,setScanStatus,setScanMessage]);
 
   return { 
     handleImageUpload, 

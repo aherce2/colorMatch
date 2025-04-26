@@ -17,22 +17,17 @@ def on_notification(data: bytes):
     
     message = data.decode().strip()
     if message.startswith("ACK:"):
-        # ack_command = message[4:]
-        # if ack_command == "start":
-        #     constants.socketio.emit('scan_status', {
-        #         'status': 'acknowledged',
-        #         'message': 'ESP32 received start command'
         ack_command = message[4:]
         if ack_command == "1":
             print("ACK ACKNOWLEDGED")
             socketio.emit('scan_status', {
-                'status': 'acknowledged',
+                'status': 'Scanning ...',
                 'message': 'ESP Recieved Command'
             })
         elif ack_command == "0":
             socketio.emit('scan_status', {
-                'status': 'acknowledged',
-                'message': 'Scan stopped'
+                'status': 'Scanning ...',
+                'message': ''
         })
     else:
         header = data[0]

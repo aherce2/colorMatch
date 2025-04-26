@@ -15,7 +15,9 @@ function App() {
   const [products, setProducts] = useState([]);
   const [measuredValue, setMeasuredValue] = useState([0, 0, 0]);
   const [monk, setMonk] = useState([]);
-  const [scanStatus, setScanStatus] = useState('idle');
+  const [scanStatus, setScanStatus] = useState('Start One Shot Scan');
+  const [scanMessage, setScanMessage] = useState('');
+
 
   // const { handleImageUpload, handleColorSelect  } = useSocketEvents(setProducts, setMeasuredValue, setMonk, setBleStatus);
   const { handleImageUpload, handleColorSelect, handleStartScan } = useSocketEvents(
@@ -23,7 +25,8 @@ function App() {
     setMeasuredValue,
     setMonk,
     setBleStatus,
-    setScanStatus
+    setScanStatus,
+    setScanMessage
   );
   
   return (
@@ -52,6 +55,7 @@ function App() {
       <ScanButton 
         onStartScan={handleStartScan} 
         command="1" 
+        scanMessage={scanMessage}
         scanStatus={scanStatus}
       />
       <MeasuredFigure measuredValue={measuredValue} monk={monk}/>
