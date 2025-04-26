@@ -122,16 +122,27 @@ def convert_to_rgb(lab_color):
     rgb_array = lab2rgb(lab_array).squeeze()
     return np.clip(rgb_array * 255, 0, 255).astype(int)
 
+# def get_input():
+#     while True:
+#         try:
+#             xyz_input = input("Enter XYZ color values (X, Y, Z): ")
+#             x, y, z = map(float, xyz_input.split(','))
+#             # Convert XYZ to LAB
+#             l, a, b = xyz_to_lab(x, y, z)
+#             # Validate LAB range
+#             if not (0 <= l <= 100 and -128 <= a <= 127 and -128 <= b <= 127):
+#                 raise ValueError("Converted LAB values out of range")
+#             return (l, a, b)
+#         except ValueError as e:
+#             print(f"Invalid input: {e}. Please try again.")
+
 def get_input():
     while True:
         try:
-            xyz_input = input("Enter XYZ color values (X, Y, Z): ")
-            x, y, z = map(float, xyz_input.split(','))
-            # Convert XYZ to LAB
-            l, a, b = xyz_to_lab(x, y, z)
-            # Validate LAB range
+            lab_input = input("Enter LAB color values (L, a, b): ")
+            l, a, b = map(float, lab_input.split(','))
             if not (0 <= l <= 100 and -128 <= a <= 127 and -128 <= b <= 127):
-                raise ValueError("Converted LAB values out of range")
+                raise ValueError("LAB values out of range")
             return (l, a, b)
         except ValueError as e:
             print(f"Invalid input: {e}. Please try again.")

@@ -27,6 +27,9 @@ def find_device(adapter):
 def connect_ble():
     global peripheral_instance
     try:
+        # reeset instance before new connection
+        peripheral_instance = None
+
         adapters = simplepyble.Adapter.get_adapters()
         if not adapters:
             logging.error("No BLE adapters found")

@@ -71,13 +71,22 @@ import { socket } from './utils/socket';
 const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, setScanStatus) => {
 
 
-  const handleStartScan = useCallback(() => {
+  // const handleStartScan = useCallback(() => {
+  //   if (socket.connected) {
+  //     setScanStatus('scanning');
+  //     socket.emit('start_scan');
+  //     setTimeout(() => setScanStatus('complete'), 3000);
+  //   }
+  // }, [setScanStatus]);
+  const handleStartScan = useCallback((command) => {
     if (socket.connected) {
+      console.log("Button Clicked Successfully");
       setScanStatus('scanning');
-      socket.emit('start_scan');
+      socket.emit('start_scan', { command }); // Send command to backend
       setTimeout(() => setScanStatus('complete'), 3000);
     }
   }, [setScanStatus]);
+
 
   const handleImageUpload = useCallback(async (file) => {
     const reader = new FileReader();
@@ -95,23 +104,6 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
     socket.emit('analyze_input', { color: true, rgb: [r, g, b] }, null);
   }, []);
 
-
-  // useEffect(() => {
-  //   const handleScanStatus = (data) => {
-  //     setScanStatus(data.status);
-  //     if (data.status === 'acknowledged') {
-  //       setTimeout(() => setScanStatus('complete'), 2500);
-  //     }
-  //   };
-
-  //   socket.connect();
-  //   socket.on('scan_status', handleScanStatus);
-
-  //   return () => {
-  //     socket.off('scan_status', handleScanStatus);
-  //     socket.disconnect();
-  //   };
-  // }, [setScanStatus]);
 
   useEffect(() => {
     socket.connect();

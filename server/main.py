@@ -58,15 +58,31 @@ def handle_analysis(data, image_buffer):
         # print(normalized_rgb)
         lab_values = color.rgb2lab(normalized_rgb)     
         # print(lab_values)
-        products = analyzeInput(lab_values)
+        analyzeInput(lab_values)
+
+# @socketio.on('start_scan')
+# def handle_start_scan():
+#     success = send_message('start')
+#     if success:
+#         socketio.emit('scan_status', {'status': 'sent', 'message': 'Start command sent'})
+#     else:
+#         socketio.emit('scan_status', {'status': 'error', 'message': 'Failed to send start command'})
 
 @socketio.on('start_scan')
-def handle_start_scan():
-    success = send_message('start')
+def handle_start_scan(data):
+    command = data.get('command', '1')  # Default to '1' if not provided
+    success = send_message(command)  # Send raw command to BLE
+    
     if success:
-        socketio.emit('scan_status', {'status': 'sent', 'message': 'Start command sent'})
+        socketio.emit('scan_status', {
+            'status': 'sent',
+            'message': f'Command {command} sent successfully'
+        })
     else:
-        socketio.emit('scan_status', {'status': 'error', 'message': 'Failed to send start command'})
+        socketio.emit('scan_status', {
+            'status': 'error',
+            'message': f'Failed to send command {command}'
+        })
 
 
 if __name__ == "__main__":

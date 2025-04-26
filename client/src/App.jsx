@@ -7,7 +7,7 @@ import MeasuredFigure from './components/measuredValue.jsx'
 import useSocketEvents from './useSocketEvents.js'
 import ImageUpload from './components/ImageUpload.jsx'
 import ColorPicker from './components/ColorPicker.jsx'
-
+import ScanButton from './components/scanBTN.jsx';
 
 
 function App() {
@@ -38,18 +38,26 @@ function App() {
 
       <ConnectBLE bleStatus={bleStatus} />
       {/* Conditionally Show ScanModal if BLE is connnected */}
+
+
       {/* {bleStatus && <ScanModal />}  */}
-      <button 
+
+      {/* <button 
         onClick={handleStartScan}
       >
         {scanStatus === 'scanning' ? 'Scanning...' : 'Start Skin Scan'}
-      </button>
+      </button> */}
 
-
+      {/* <ScanButton scanStatus={scanStatus} onStartScan={handleStartScan}/> */}
+      <ScanButton 
+        onStartScan={handleStartScan} 
+        command="1" 
+        scanStatus={scanStatus}
+      />
       <MeasuredFigure measuredValue={measuredValue} monk={monk}/>
       {/* {bleStatus && products.length > 0 && <DisplayCard products={products}/>} */}
 
-      {bleStatus && (
+      {(
         products.length > 0 ? (
           <DisplayCard products={products} />
         ) : (<h5>No products matching within threshold</h5>)
