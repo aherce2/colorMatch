@@ -19,7 +19,7 @@ MST_REF = {
 
 socketio = SocketIO(max_http_buffer_size=100 * 1024 * 1024)
 
-DEVICE_NAME = "ESP32"
+DEVICE_NAME = "ESP32-team6"
 SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 received_messages = []

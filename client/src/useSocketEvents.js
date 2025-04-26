@@ -5,22 +5,25 @@ import { socket } from './utils/socket';
 const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, setScanStatus,setScanMessage) => {
 
 
-  // const handleStartScan = useCallback(() => {
-  //   if (socket.connected) {
-  //     setScanStatus('scanning');
-  //     socket.emit('start_scan');
-  //     setTimeout(() => setScanStatus('complete'), 3000);
-  //   }
-  // }, [setScanStatus]);
-
   const handleStartScan = useCallback((command) => {
     if (socket.connected) {
-      console.log("Button Clicked Successfully"); 
-      setScanStatus('scanning');
-      socket.emit('start_scan', { command }); // Send command to backend
-      setTimeout(() => setScanStatus('Scan Finished'), 3000);
+      setScanStatus(true);
+      setScanMessage('Scanning...');
+      socket.emit('start_scan', { command });
+  
+      setTimeout(() => {
+        // setScanStatus(false);
+        setScanMessage('Scan Finished');
+        
+        // Reset to original state after 2 seconds
+        setTimeout(() => {
+          setScanMessage('Start One Shot Scan');
+          // setScanStatus(false);
+        }, 2000);
+      }, 1000);
     }
-  }, [setScanStatus]);
+  }, [setScanStatus, setScanMessage]);
+  
 
 
   const handleImageUpload = useCallback(async (file) => {
@@ -44,16 +47,10 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
     socket.connect();
 
     const socketEventHandlers = {
-      // 'scan_status': (data) => {
-      //   setScanStatus(data.status);
-      //   if (data.status === 'acknowledged') {
-      //     setTimeout(() => setScanStatus('complete'), 2500);
-      //   }
-      // },
+
       'scan_status': (data) => {
-        console.log("Display Acknowledge");
         if (data.status === 'acknowledged') {
-          setTimeout(() => setScanStatus(data.status),setScanMessage(data.message || ''), 2500);
+          setTimeout(() => setScanStatus(false),setScanMessage(data.message || ''), 1000);
           }
       },
       'upload_error': (error) => console.error('Upload failed:', error),

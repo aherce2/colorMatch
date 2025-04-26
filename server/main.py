@@ -37,6 +37,10 @@ def handle_ble_disconnect():
     else:
         socketio.emit('ble_status', {'status': 'error', 'message': 'Disconnection failed'})
 
+@socketio.on('get_oneshot')
+def handle_oneshot(lab):
+    analyzeInput(lab)
+
 @socketio.on('analyze_input')
 def handle_analysis(data, image_buffer):
     if data.get('color', False):
