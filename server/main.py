@@ -8,6 +8,7 @@ from uploadImage import process_image_enhanced
 from skimage import color
 from getMatches import analyzeInput
 import os
+from Helper_Functions.analyzeData import xyz_to_lab
 import numpy as np
 
 # Create An App Instance
@@ -48,8 +49,10 @@ def handle_analysis(data, image_buffer):
         rgb = data.get('rgb', [0, 0, 0])
         normalized_rgb = np.array([rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0])
         print(rgb, normalized_rgb)
-        lab_values = color.rgb2lab([normalized_rgb])[0]
+        # lab_values = color.rgb2lab([normalized_rgb])[0]
+        lab_values = xyz_to_lab(normalized_rgb)
         products = analyzeInput(lab_values)
+        print(products)
     else:
         # Process image upload
         filename = data.get('filename', 'untitled')
@@ -64,13 +67,6 @@ def handle_analysis(data, image_buffer):
         # print(lab_values)
         analyzeInput(lab_values)
 
-# @socketio.on('start_scan')
-# def handle_start_scan():
-#     success = send_message('start')
-#     if success:
-#         socketio.emit('scan_status', {'status': 'sent', 'message': 'Start command sent'})
-#     else:
-#         socketio.emit('scan_status', {'status': 'error', 'message': 'Failed to send start command'})
 
 @socketio.on('start_scan')
 def handle_start_scan(data):

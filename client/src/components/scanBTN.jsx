@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ScanButton = ({ scanStatus,scanMessage, onStartScan, command  }) => {
+const ScanButton = ({scanMessage, onStartScan, command  }) => {
 
   return (
     <div className="d-grid gap-2 my-3">

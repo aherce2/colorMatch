@@ -12,13 +12,11 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
       socket.emit('start_scan', { command });
   
       setTimeout(() => {
-        // setScanStatus(false);
         setScanMessage('Scan Finished');
         
         // Reset to original state after 2 seconds
         setTimeout(() => {
           setScanMessage('Start One Shot Scan');
-          // setScanStatus(false);
         }, 2000);
       }, 1000);
     }
@@ -50,7 +48,7 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
 
       'scan_status': (data) => {
         if (data.status === 'acknowledged') {
-          setTimeout(() => setScanStatus(false),setScanMessage(data.message || ''), 1000);
+          setTimeout(() => setScanMessage(data.message || ''), 1000);
           }
       },
       'upload_error': (error) => console.error('Upload failed:', error),
