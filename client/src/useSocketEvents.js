@@ -7,18 +7,31 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
 
   const handleStartScan = useCallback((command) => {
     if (socket.connected) {
-      setScanStatus(true);
-      setScanMessage('Scanning...');
-      socket.emit('start_scan', { command });
-  
-      setTimeout(() => {
-        setScanMessage('Scan Finished');
-        
-        // Reset to original state after 2 seconds
+      
+      
+      if(command == "1"){
+        setScanMessage('Scanning...');
+          
         setTimeout(() => {
-          setScanMessage('Start One Shot Scan');
-        }, 2000);
-      }, 1000);
+          setScanMessage('Scan Finished');
+          // Reset to original state after 2 seconds
+          setTimeout(() => {
+            setScanMessage('Start Single Shot Scan');
+          }, 2000);
+        }, 10000);
+    
+      }else if (command == "0"){
+        setScanStatus('Scanning...');
+        setTimeout(() => {
+          setScanStatus('Scan Finished');
+          // Reset to original state after 2 seconds
+          setTimeout(() => {
+            setScanStatus('Start Scan with Lighting');
+          }, 2000);
+        }, 25000);
+      }
+      
+      socket.emit('start_scan', { command });
     }
   }, [setScanStatus, setScanMessage]);
   

@@ -21,11 +21,6 @@ def connect(filepath="database.db"):
 def close_connection(conn):
     return conn.close()
     
-# def convert_to_rgb(lab_color):
-#     lab_array = np.array([[lab_color]], dtype=np.float64)
-#     rgb_array = lab2rgb(lab_array).squeeze()
-#     return np.clip(rgb_array * 255, 0, 255).astype(int)
-
 def convert_to_rgb(lab_color):
     lab_array = np.array([[lab_color]], dtype=np.float64)
     rgb_array = lab2rgb(lab_array).squeeze()

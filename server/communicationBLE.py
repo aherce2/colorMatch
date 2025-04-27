@@ -44,7 +44,6 @@ def on_notification(data: bytes):
     if len(data) == 13:
         header = data[0]
         payload = data[1:]
-        print(len(payload))
         if header == 0x01:  # LAB data
             try:
                 # Verify payload length matches 3 floats (12 bytes)
@@ -74,7 +73,7 @@ def on_notification(data: bytes):
                 print(f"Invalid LAB payload: {e}")
                 
         elif header == 0x02: 
-            print("Multi Scan")        
+            print("ESP Returned")        
             
         else:
             print(f"Unknown header: {hex(header)}")

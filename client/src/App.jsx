@@ -15,7 +15,7 @@ function App() {
   const [measuredValue, setMeasuredValue] = useState([0, 0, 0]);
   const [monk, setMonk] = useState([]);
   const [scanStatus, setScanStatus] = useState('Start Scan with Lighting');
-  const [scanMessage, setScanMessage] = useState('Start Scan');
+  const [scanMessage, setScanMessage] = useState('Start Single Shot Scan');
 
 
   const { handleImageUpload, handleColorSelect, handleStartScan } = useSocketEvents(
