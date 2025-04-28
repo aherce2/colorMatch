@@ -56,7 +56,7 @@ def getProducts(shade_matches, delta_e, cursor_obj):
                 "hex": hex_value,
                 "percent_match": f"{percent_match}%"
             })
-    print(product_dict)
+    # print(product_dict)
     return product_dict
 
             

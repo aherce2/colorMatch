@@ -49,8 +49,8 @@ def handle_analysis(data, image_buffer):
         rgb = data.get('rgb', [0, 0, 0])
         normalized_rgb = np.array([rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0])
         print(rgb, normalized_rgb)
-        # lab_values = color.rgb2lab([normalized_rgb])[0]
-        lab_values = xyz_to_lab(normalized_rgb)
+        lab_values = color.rgb2lab([normalized_rgb])[0]
+        # lab_values = xyz_to_lab(normalized_rgb)
         products = analyzeInput(lab_values)
         print(products)
     else:

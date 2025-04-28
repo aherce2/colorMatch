@@ -42,7 +42,16 @@ function MeasuredFigure({ measuredValue, monk }) {
               fontWeight: 'bold',
             }}
           >
+            <a
+              href={`https://www.colorhexa.com/${hexColor.replace('#', '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'inherit', textDecoration: 'underline' }}
+            >
+
             {hexColor}
+            </a>
+            
           </span>
         </div>
       </div>

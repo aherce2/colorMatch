@@ -27,8 +27,8 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
           // Reset to original state after 2 seconds
           setTimeout(() => {
             setScanStatus('Start Scan with Lighting');
-          }, 2000);
-        }, 25000);
+          }, 1000);
+        }, 20000);
       }
       
       socket.emit('start_scan', { command });

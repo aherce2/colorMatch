@@ -73,8 +73,33 @@ def on_notification(data: bytes):
                 print(f"Invalid LAB payload: {e}")
                 
         elif header == 0x02: 
-            print("ESP Returned")        
-            
+            try:
+                # Verify payload length matches 3 floats (12 bytes)
+                if len(payload) != 12:
+                    raise ValueError("Invalid payload length")
+                
+                # x,y,Y = struct.unpack('<fff', payload)
+                # Unpack little-endian floats (ESP32 uses little-endian)
+                x, y, Y = struct.unpack('<fff', data[1:13])
+
+                print(f"Recieved Average xyY values: [{x:.2f}, {y:.2f}, {Y:.2f}]")
+                X,Y, Z = xyY_to_XYZ(x,y,Y)
+                print(f"XYZ Values Converted: [{X:.2f}, {Y:.2f}, {Z:.2f}]")
+                l,a,b = xyz_to_lab(X,Y,Z)
+                # Unpack 3 floats (little-endian format)
+                # l, a, b = struct.unpack('<fff', payload)
+                print(f"Converted LAB Values: [{l:.2f}, {a:.2f}, {b:.2f}]")
+                
+                # Update frontend with raw LAB values
+                socketio.emit('target_lab', {
+                    'target': [round(l, 2), round(a, 2), round(b, 2)]
+                })
+                
+                # Process analysis
+                analyzeInput([l, a, b])
+            except (struct.error, ValueError) as e:
+                print(f"Invalid LAB payload: {e}")      
+
         else:
             print(f"Unknown header: {hex(header)}")
     else:
