@@ -29,7 +29,7 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
         setTimeout(() => {
           setScanStatus('Start Scan with Lighting');
           setDisableScan(false);
-        }, 30000);
+        }, 10000);
       }
       
       socket.emit('start_scan', { command });
@@ -72,7 +72,7 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
       'target_lab': (data) => {
         setMeasuredValue?.(data.target || [0, 0, 0]);
         setDisableButton?.(false); // Re-enable when color data arrives
-
+        
       },
       'monk_category': (data) => setMonk?.(data.monk_category || 'No categories available'),
       'ble_status': (data) => {

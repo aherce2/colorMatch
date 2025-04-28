@@ -43,19 +43,19 @@ function App() {
       {/* Conditionally Show ScanModal if BLE is connnected */}
 
 
-      <MultiScan 
+    { bleStatus && <MultiScan 
         onStartScan={handleStartScan} 
         command="0" 
         scanStatus={scanStatus}
         disabled={disableScan}
-      />
+    />}
 
-      <ScanButton 
+      {bleStatus && <ScanButton 
         onStartScan={handleStartScan} 
         command="1" 
         scanMessage={scanMessage}
         disabled={disableButton}
-      />
+      />}
       <MeasuredFigure measuredValue={measuredValue} monk={monk}/>
       {/* {bleStatus && products.length > 0 && <DisplayCard products={products}/>} */}
 
