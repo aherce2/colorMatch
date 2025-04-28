@@ -53,7 +53,12 @@ def on_notification(data: bytes):
             
             X, Y_val, Z = xyY_to_XYZ(x, y, Y)
             l, a, b = xyz_to_lab(X, Y_val, Z)
-            
+            print(f"Recieved xyY values: [{x:.2f}, {y:.2f}, {Y:.2f}]")
+            X,Y, Z = xyY_to_XYZ(x,y,Y)
+            print(f"XYZ Values Converted: [{X:.2f}, {Y:.2f}, {Z:.2f}]")
+            l,a,b = xyz_to_lab(X,Y,Z)
+            print(f"Converted LAB Values: [{l:.2f}, {a:.2f}, {b:.2f}]")
+
             socketio.emit('target_lab', {
                 'target': [round(l, 2), round(a, 2), round(b, 2)]
             })
@@ -75,13 +80,17 @@ def on_notification(data: bytes):
             for i in range(3):
                 offset = i * 3
                 x, y, Y = measurements[offset:offset+3]
-                print(f"xyY: [{x:.4f}, {y:.4f}, {Y:.4f}]")
-
                 X, Y_val, Z = xyY_to_XYZ(x, y, Y)
                 l, a, b = xyz_to_lab(X, Y_val, Z)
+                print(f"Recieved xyY values: [{x:.2f}, {y:.2f}, {Y:.2f}]")
+                X,Y, Z = xyY_to_XYZ(x,y,Y)
+                print(f"XYZ Values Converted: [{X:.2f}, {Y:.2f}, {Z:.2f}]")
+                l,a,b = xyz_to_lab(X,Y,Z)
+                print(f"Converted LAB Values: [{l:.2f}, {a:.2f}, {b:.2f}]")
 
         except struct.error as e:
             print(f"Failed to unpack measurements: {e}")
 
     else:
         print(f"Unknown header: {hex(header)}")
+
