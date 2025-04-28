@@ -2,7 +2,7 @@
 import { useEffect, useCallback, useState } from 'react';
 import { socket } from './utils/socket';
 
-const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, setScanStatus,setScanMessage) => {
+const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, setScanStatus,setScanMessage,setDisableButton,setDisableScan) => {
 
 
   const handleStartScan = useCallback((command) => {
@@ -11,29 +11,30 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
       
       if(command == "1"){
         setScanMessage('Scanning...');
-          
+        setDisableButton(true);
+        setMeasuredValue([0,0,0])
+        setProducts([]);
+        // Reset to original state after 2 seconds
         setTimeout(() => {
-          setScanMessage('Scan Finished');
-          // Reset to original state after 2 seconds
-          setTimeout(() => {
-            setScanMessage('Start Single Shot Scan');
-          }, 2000);
-        }, 10000);
+          setScanMessage('Start Single Shot Scan');
+          setDisableButton(false);
+        }, 2000);
     
       }else if (command == "0"){
         setScanStatus('Scanning...');
+        setDisableScan(true);
+        setMeasuredValue([0,0,0])
+        setProducts([]);
+        // Reset to original state after 2 seconds
         setTimeout(() => {
-          setScanStatus('Scan Finished');
-          // Reset to original state after 2 seconds
-          setTimeout(() => {
-            setScanStatus('Start Scan with Lighting');
-          }, 1000);
-        }, 20000);
+          setScanStatus('Start Scan with Lighting');
+          setDisableScan(false);
+        }, 30000);
       }
       
       socket.emit('start_scan', { command });
     }
-  }, [setScanStatus, setScanMessage]);
+  }, [setScanStatus, setScanMessage,setDisableButton,setDisableScan]);
   
 
 
@@ -61,12 +62,18 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
 
       'scan_status': (data) => {
         if (data.status === 'acknowledged') {
-          setTimeout(() => setScanMessage(data.message || ''), 1000);
+          setTimeout(() => setScanMessage(data.message || ''), 100);
           }
       },
+      /*'target_lab': (data) => {
+        setMeasuredValue?.(data.target || [0, 0, 0]), */
       'upload_error': (error) => console.error('Upload failed:', error),
       'lab_products': (data) => setProducts(data.products),
-      'target_lab': (data) => setMeasuredValue?.(data.target || [0, 0, 0]),
+      'target_lab': (data) => {
+        setMeasuredValue?.(data.target || [0, 0, 0]);
+        setDisableButton?.(false); // Re-enable when color data arrives
+
+      },
       'monk_category': (data) => setMonk?.(data.monk_category || 'No categories available'),
       'ble_status': (data) => {
         setBleStatus?.(data.status === 'connected');
@@ -88,7 +95,7 @@ const useSocketEvents = (setProducts, setMeasuredValue, setMonk, setBleStatus, s
       });
       socket.disconnect();
     };
-  }, [setProducts, setMeasuredValue, setMonk, setBleStatus,setScanStatus,setScanMessage]);
+  }, [setProducts, setMeasuredValue, setMonk, setBleStatus,setScanStatus,setScanMessage,setDisableButton,setDisableScan]);
 
   return { 
     handleImageUpload, 
