@@ -35,6 +35,10 @@ def handle_ble_disconnect():
     success = disconnect_ble()
     if success:
         socketio.emit('ble_status', {'status': 'disconnected', 'message': 'BLE device disconnected'})
+        socketio.emit('target_lab', {
+                'target': [round(0, 2), round(0, 2), round(0, 2)]
+            })
+        socketio.emit('lab_products', {'products': []}) # Broadcast products
     else:
         socketio.emit('ble_status', {'status': 'error', 'message': 'Disconnection failed'})
 

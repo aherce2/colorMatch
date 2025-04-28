@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 from constants import *
 from getMatches import analyzeInput
-from Helper_Functions.analyzeData import xyz_to_lab
+from Helper_Functions.analyzeData import xyz_to_lab, convert_to_rgb
 import struct
 
 
@@ -88,6 +88,8 @@ def on_notification(data: bytes):
                 l,a,b = xyz_to_lab(X,Y,Z)
                 print(f"Converted LAB Values: [{l:.2f}, {a:.2f}, {b:.2f}]")
 
+                color_info = convert_to_rgb([l, a, b])
+                print(f"RGB: {color_info['rgb']}, HEX: {color_info['hex']}\n")
         except struct.error as e:
             print(f"Failed to unpack measurements: {e}")
 
